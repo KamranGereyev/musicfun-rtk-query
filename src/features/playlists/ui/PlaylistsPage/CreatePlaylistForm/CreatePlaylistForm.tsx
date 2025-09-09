@@ -3,12 +3,12 @@ import type {CreatePlaylistArgs} from "@/features/playlists/api/playlistsApi.typ
 import {useCreatePlaylistMutation} from "@/features/playlists/api/playListApi.ts";
 
 export const CreatePlaylistForm = () => {
-    const { register, handleSubmit } = useForm<CreatePlaylistArgs>()
+    const { register, handleSubmit, reset } = useForm<CreatePlaylistArgs>()
 
     const [createPlaylist] = useCreatePlaylistMutation()
 
     const onSubmit: SubmitHandler<CreatePlaylistArgs> = data => {
-        createPlaylist(data)
+        createPlaylist(data).unwrap().then(() => reset())
     }
 
     return (
