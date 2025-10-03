@@ -1,15 +1,17 @@
 import type {
-    CreatePlaylistArgs,
-    PlaylistsResponse,
     PlaylistData,
-    UpdatePlaylistArgs
+    PlaylistsResponse,
+    FetchPlaylistsArgs,
+    UpdatePlaylistArgs,
+    CreatePlaylistArgs
 } from "@/features/playlists/api/playlistsApi.types.ts";
 import {baseApi} from "@/app/api/baseApi.ts";
+import type {Images} from "@/common/types";
 
 export const playListsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        fetchPlaylists: builder.query<PlaylistsResponse, void>({
-            query: () => 'playlists',
+        fetchPlaylists: builder.query<PlaylistsResponse, FetchPlaylistsArgs>({
+            query: (params) => ({ url: 'playlists', params }),
             providesTags: ['Playlist'],
         }),
         createPlaylist: builder.mutation<{data: PlaylistData}, CreatePlaylistArgs>({
@@ -32,7 +34,33 @@ export const playListsApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Playlist'],
         }),
+        uploadPlaylistCover: builder.mutation<Images, { playlistId: string; file: File }>({
+            query: ({ playlistId, file }) => {
+                const formData = new FormData()
+                formData.append('file', file)
+                return {
+                    url: `playlists/${playlistId}/images/main`,
+                    method: 'Post',
+                    body: formData,
+                }
+            },
+            invalidatesTags: ['Playlist'],
+        }),
+        deletePlaylistCover: builder.mutation<void, { playlistId: string }>({
+            query: ({ playlistId }) => ({
+                    url: `playlists/${playlistId}/images/main`,
+                    method: 'Delete',
+            }),
+            invalidatesTags: ['Playlist'],
+        }),
     }),
 })
 
-export const { useFetchPlaylistsQuery, useCreatePlaylistMutation, useDeletePlaylistMutation, useUpdatePlaylistMutation} = playListsApi
+export const {
+    useFetchPlaylistsQuery,
+    useCreatePlaylistMutation,
+    useDeletePlaylistMutation,
+    useUpdatePlaylistMutation,
+    useUploadPlaylistCoverMutation,
+    useDeletePlaylistCoverMutation,
+} = playListsApi

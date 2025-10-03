@@ -8,7 +8,7 @@ import {store} from "@/app/model/store.ts";
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
       <Provider store={store}>
-    <App />
+        <App />
       </Provider>
   </BrowserRouter>,
 )

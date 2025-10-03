@@ -8,7 +8,6 @@ import s from './PlaylistsPage.module.css'
 import {CreatePlaylistForm} from "@/features/playlists/ui/PlaylistsPage/CreatePlaylistForm/CreatePlaylistForm.tsx";
 import {type SubmitHandler, useForm} from "react-hook-form";
 import type {
-    CreatePlaylistArgs,
     PlaylistData,
     UpdatePlaylistArgs
 } from "@/features/playlists/api/playlistsApi.types.ts";
@@ -17,9 +16,11 @@ import {EditPlaylistForm} from "@/features/playlists/ui/EditPlaylistForm/EditPla
 
 export const PlaylistsPage = () => {
     const [playlistId, setPlaylistId] = useState<string | null>(null)
+    const [search, setSearch] = useState<string>('')
     const { register, handleSubmit, reset } = useForm<UpdatePlaylistArgs>()
 
-    const {data, isLoading} = useFetchPlaylistsQuery()
+
+    const {data, isLoading} = useFetchPlaylistsQuery({ search })
     const [deletePlaylist] = useDeletePlaylistMutation()
 
     const deletePlaylistHandler = (playlistId: string) => {
@@ -27,10 +28,6 @@ export const PlaylistsPage = () => {
             deletePlaylist(playlistId)
         }
     }
-    const updatePlaylistHandler = (playlistId: string) => {
-
-    }
-    if (isLoading) return <h1>Loading...</h1>
 
 
     const editPlaylistHandler = (playlist: PlaylistData | null) => {
@@ -46,13 +43,17 @@ export const PlaylistsPage = () => {
         }
     }
 
-
-
     return (
         <div className={s.container}>
             <h1>Playlists page</h1>
             <CreatePlaylistForm/>
+            <input
+                type="search"
+                placeholder={'Search playlist by title'}
+                onChange={e => setSearch(e.currentTarget.value)}
+            />
             <div className={s.items}>
+                {!data?.data.length && !isLoading && <h1>Playlists not found</h1>}
                 {data?.data.map(playlist => {
                     const isEditing = playlistId === playlist.id
                     return (
