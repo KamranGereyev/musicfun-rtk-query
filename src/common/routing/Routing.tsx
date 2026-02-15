@@ -4,14 +4,7 @@ import {PlaylistsPage} from "@/features/playlists/ui/PlaylistsPage.tsx";
 import {TracksPage} from "@/features/tracks/ui/TracksPage.tsx";
 import {ProfilePage} from "@/features/auth/ui/ProfilePage/ProfilePage.tsx";
 import {PageNotFound} from "@/common/components";
-
-export const Path = {
-    Main: '/',
-    Playlists: '/playlists',
-    Tracks: '/tracks',
-    Profile: '/profile',
-    NotFound: '*',
-} as const
+import {Path} from "@/common/components/routing/paths.ts";
 
 export const Routing = () => (
     <Routes>
