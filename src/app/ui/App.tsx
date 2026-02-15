@@ -1,4 +1,4 @@
-import {Routing} from "@/common/routing/Routing.tsx";
+import {Routing} from "@/common/routing";
 
 export const App = () => {
     return (
