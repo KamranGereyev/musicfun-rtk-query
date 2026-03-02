@@ -2,7 +2,7 @@ import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import type {
     CreatePlaylistArgs,
     FetchPlaylistsArgs, PlaylistData,
-    PlaylistsResponse
+    PlaylistsResponse, UpdatePlaylistArgs
 } from "@/features/playlists/api/playlistsApi.types.ts";
 
 export const playlistsApi = createApi({
@@ -35,8 +35,31 @@ export const playlistsApi = createApi({
                     }
                 }
             })
-        })
+        }),
+        deletePlaylist: build.mutation<void, string>({
+            query: playlistId => ({
+                url: `playlists/${playlistId}`,
+                method: 'delete',
+            }),
+        }),
+        updatePlaylist: build.mutation<{ data: PlaylistData }, { playlistId: string; body: UpdatePlaylistArgs }>({
+            query: ({ playlistId, body }) => ({
+                url: `playlists/${playlistId}`,
+                method: 'put', // или 'patch' — зависит от API
+                body: {
+                    data: {
+                        type: 'playlists',
+                        id: playlistId,
+                        attributes: {
+                            title: body.title,
+                            description: body.description,
+                            tagIds: body.tagIds,
+                        },
+                    },
+                },
+            }),
+        }),
     }),
 })
 
-export const { useFetchPlaylistsQuery, useCreatePlaylistMutation } = playlistsApi
+export const { useFetchPlaylistsQuery, useCreatePlaylistMutation, useDeletePlaylistMutation, useUpdatePlaylistMutation } = playlistsApi
